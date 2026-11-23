@@ -802,7 +802,7 @@ if (typeof module !== "undefined") module.exports = { pickQartSheet, parseStock,
       note("err", `<strong>${fmt(pr.missingFields.length)} new product row${pr.missingFields.length === 1 ? " is" : "s are"} missing required values</strong> and the portal will reject ${pr.missingFields.length === 1 ? "it" : "them"} until they're filled in: ${list}${pr.missingFields.length > 15 ? "…" : ""}`);
     }
     if (pr.mrpForced.length) note("warn", `<strong>MRP set to 1 for ${fmt(pr.mrpForced.length)} new row${pr.mrpForced.length === 1 ? "" : "s"}</strong> because the client file had no valid MRP: ${codeList(pr.mrpForced, 15)}`);
-    if (r.productCheck.alreadyInMaster.length) note("info", `${fmt(r.productCheck.alreadyInMaster.length)} new stock codes already exist in the product master, so they aren't in the product file: ${codeList(r.productCheck.alreadyInMaster, 15)}`);
+    if (r.productCheck.alreadyInMaster.length) note("info", `${fmt(r.productCheck.alreadyInMaster.length)} new stock codes already exist in the product master, but they are still included in the product file: ${codeList(r.productCheck.alreadyInMaster, 15)}`);
     if (r.dupes) note("info", `${fmt(r.dupes)} codes appeared more than once in the client's data. Their quantities were added together.`);
     if (r.stockCount && r.added.length === r.clientCount && r.clientCount > 0) note("warn", `None of the client's codes matched the portal stock. If you expected some to match, check that you picked the right client file.`);
 
@@ -859,7 +859,7 @@ if (typeof module !== "undefined") module.exports = { pickQartSheet, parseStock,
         const miss = portal.stock.data.map(x => txt(x[portal.stock.ix.code])).filter(c => !portal.productSet.has(c.toUpperCase()));
         pc = { ran: true, missingExisting: miss, missingCount: miss.length, alreadyInMaster: [] };
       }
-      const needRows = found ? r.added.filter(a => !found.has(a.code.toUpperCase())) : r.added;
+      const needRows = r.added;
       if (found) pc.alreadyInMaster = r.added.filter(a => found.has(a.code.toUpperCase())).map(a => a.code);
       r.productCheck = pc;
       r.product = buildProductRows(needRows, {
